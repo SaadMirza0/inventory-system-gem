@@ -1,0 +1,110 @@
+'use client';
+import { useState } from 'react';
+import { Calendar, User, Tag, Layers, Maximize, Search, Eye } from 'lucide-react';
+
+export default function InvoiceList({ invoices, onViewClick }) {
+  const [invoiceSearch, setInvoiceSearch] = useState('');
+
+  // Filters invoices dynamically on the client side
+  const filteredInvoices = invoices.filter((inv) => {
+    const matchesName = inv.customer_name.toLowerCase().includes(invoiceSearch.toLowerCase());
+    const matchesId = inv.id.toString().includes(invoiceSearch);
+    return matchesName || matchesId;
+  });
+
+  return (
+    <div className="space-y-4">
+      {/* Dynamic Search Bar for Invoices */}
+      <div className="relative flex items-center rounded-lg border border-slate-200 bg-white px-3 shadow-xs focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition">
+        <Search size={16} className="text-slate-400 pointer-events-none" />
+        <input 
+          type="text" 
+          placeholder="Search history by Customer Name or Invoice ID..." 
+          value={invoiceSearch} 
+          onChange={(e) => setInvoiceSearch(e.target.value)} 
+          className="w-full bg-transparent border-0 px-2 py-2.5 text-sm text-slate-900 outline-hidden placeholder:text-slate-400" 
+        />
+      </div>
+
+      {/* Main History Table Container */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+        <div className="p-5 border-b border-slate-100 bg-slate-50/50">
+          <h3 className="text-base font-bold text-slate-900">Completed Sales History</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Logs of all gemstone transactions recorded in the database.</p>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
+            <thead className="bg-slate-50 border-b border-slate-200 text-xs font-semibold tracking-wider text-slate-500 uppercase">
+              <tr>
+                <th className="px-5 py-3">Invoice & Date</th>
+                <th className="px-5 py-3">Gemstone Profile</th>
+                <th className="px-5 py-3">Customer Details</th>
+                <th className="px-5 py-3">Seller Details</th>
+                <th className="px-5 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
+              {filteredInvoices.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-5 py-10 text-center text-slate-400 text-xs">
+                    No matching sales invoices found in the database.
+                  </td>
+                </tr>
+              ) : (
+                filteredInvoices.map((inv) => (
+                  <tr key={inv.id} className="hover:bg-slate-50/40 transition duration-75">
+                    {/* Invoice ID & Date */}
+                    <td className="px-5 py-3.5">
+                      <span className="font-semibold text-slate-900 block">#{inv.id}</span>
+                      <span className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                        <Calendar size={12}/> {new Date(inv.created_at).toLocaleDateString()}
+                      </span>
+                    </td>
+                    
+                    {/* Product Details */}
+                    <td className="px-5 py-3.5">
+                      <span className="font-medium text-indigo-950 block">{inv.gem_name}</span>
+                      <div className="flex gap-2 text-xs text-slate-500 mt-1 font-mono">
+                        <span className="bg-slate-100 px-1.5 py-0.5 rounded flex items-center gap-0.5"><Layers size={10}/> Qty: {inv.sold_quantity}</span>
+                        <span className="bg-slate-100 px-1.5 py-0.5 rounded flex items-center gap-0.5"><Tag size={10}/> {inv.weight}</span>
+                        <span className="bg-slate-100 px-1.5 py-0.5 rounded flex items-center gap-0.5"><Maximize size={10}/> {inv.dimensions}</span>
+                      </div>
+                    </td>
+                    
+                    {/* Customer Info */}
+                    <td className="px-5 py-3.5">
+                      <span className="text-slate-800 font-medium block flex items-center gap-1"><User size={13} className="text-slate-400"/> {inv.customer_name}</span>
+                      <span className="text-xs text-slate-500 font-mono mt-0.5">{inv.customer_number}</span>
+                    </td>
+                    
+                    {/* Seller Info */}
+                    <td className="px-5 py-3.5">
+                      <span className="text-slate-700 block">{inv.seller_name}</span>
+                      <span className="text-xs text-slate-400 font-mono">{inv.seller_number}</span>
+                    </td>
+                    
+                    {/* View Button & Price Display */}
+                    <td className="px-5 py-3.5 text-right">
+                      <div className="flex flex-col items-end gap-1.5">
+                        <span className="font-bold text-emerald-700 font-mono text-sm">
+                          Rs. {Number(inv.sold_price).toLocaleString()}
+                        </span>
+                        <button 
+                          onClick={() => onViewClick(inv)} 
+                          className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600 shadow-2xs hover:bg-slate-50 transition"
+                        >
+                          <Eye size={12}/> View
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
