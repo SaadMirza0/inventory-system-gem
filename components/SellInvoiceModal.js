@@ -9,35 +9,37 @@ export default function SellInvoiceModal({ gem, onClose, onSellSuccess }) {
     customer_name: '', 
     customer_number: '+92', 
     seller_name: '', 
-    seller_number: '0308 9110070', 
+    seller_number: '+92 333 0600166', 
     sold_price: '', 
     sold_quantity: 1, 
     weight: '', 
     dimensions: '' 
   });
 
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Auto formatting the weight metric input box to include the gem's dynamic storage unit 
+      // 1. Fire database action entry
+      const dbResponse = await createInvoiceAndSell({
+        gemstone_id: gem.id,
+        gem_name: gem.name,
+        price_unit: gem.price_unit,
+        ...form
+      });
+
+      const invoiceId = Array.isArray(dbResponse) && dbResponse[0]?.id 
+        ? dbResponse[0].id 
+        : (dbResponse?.id || Math.floor(100000 + Math.random() * 900000));
+
+      const orderDate = new Date().toLocaleString();
       const finalWeightString = form.weight.toLowerCase().includes(gem.price_unit.toLowerCase()) 
         ? form.weight 
         : `${form.weight} ${gem.price_unit}`;
 
-      const dbResponse = await createInvoiceAndSell({
-        gemstone_id: gem.id,
-        gem_name: gem.name,
-        price_unit: gem.price_unit, // Pass tracking unit
-        weight: finalWeightString,
-        ...form
-      });
-
-      const invoiceId = dbResponse?.id || 'N/A';
-      const orderDate = dbResponse?.created_at ? new Date(dbResponse.created_at).toLocaleString() : new Date().toLocaleString();
-
+      // 2. Clear WhatsApp message template strings — Removed weird broken diamond symbols
       const textTemplate = `✨ *GEMS LAB INVOICE* ✨\n` +
         `----------------------------------------\n` +
-        `🧾 *Invoice ID:* #${invoiceId}\n` +
+        `🧾 *Invoice ID:* # ${invoiceId}\n` +
         `📅 *Date/Time:* ${orderDate}\n\n` +
         `👤 *Customer:* ${form.customer_name} (${form.customer_number})\n` +
         `🤵 *Seller:* ${form.seller_name} (${form.seller_number})\n` +
@@ -51,13 +53,14 @@ export default function SellInvoiceModal({ gem, onClose, onSellSuccess }) {
         `Thank you for choosing Gems Lab!`;
 
       const cleanPhone = form.customer_number.replace(/\D/g, "");
-      window.open(`https://wa.me{cleanPhone}?text=${encodeURIComponent(textTemplate)}`, '_blank');
+      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(textTemplate)}`, '_blank');
       
       onSellSuccess();
     } catch (err) {
       alert(err.message);
     }
   };
+
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 backdrop-blur-xs z-50">
@@ -72,10 +75,35 @@ export default function SellInvoiceModal({ gem, onClose, onSellSuccess }) {
             <label className="text-xs font-semibold block text-slate-600 mb-1">Customer Name</label>
             <input required type="text" value={form.customer_name} onChange={(e) => setForm({...form, customer_name: e.target.value})} className="border p-2 w-full rounded-lg border-slate-200 outline-hidden" />
           </div>
+               {/* Automatically Sanitized Customer Phone Input Box */}
           <div>
             <label className="text-xs font-semibold block text-slate-600 mb-1">Customer Number</label>
-            <input required type="text" placeholder="923001234567" value={form.customer_number} onChange={(e) => setForm({...form, customer_number: e.target.value})} className="border p-2 w-full rounded-lg border-slate-200 outline-hidden" />
+            <div className="relative flex items-center">
+              {/* Fixed country code prefix visible to user */}
+              <span className="absolute left-3 text-sm font-semibold text-slate-400 pointer-events-none select-none">
+                +92
+              </span>
+              <input 
+                required 
+                type="text" 
+                placeholder="3089110070" 
+                value={form.customer_number.replace(/^\+92/, '')} 
+                onChange={(e) => {
+                  let input = e.target.value.replace(/\D/g, "");
+                  if (input.startsWith("0")) {
+                    input = input.substring(1);
+                  }
+                  setForm({
+                    ...form,
+                    customer_number: input ? `+92${input}` : ""
+                  });
+                }} 
+                className="border p-2 pl-12 w-full rounded-lg border-slate-200 outline-hidden font-mono tracking-wide text-sm text-slate-800" 
+              />
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1">Leading zeros (0) are automatically stripped.</p>
           </div>
+
           <div>
             <label className="text-xs font-semibold block text-slate-600 mb-1">Seller Name</label>
             <input required type="text" value={form.seller_name} onChange={(e) => setForm({...form, seller_name: e.target.value})} className="border p-2 w-full rounded-lg border-slate-200 outline-hidden" />

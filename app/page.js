@@ -51,20 +51,28 @@ const filteredGems = gems.filter(gem => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
-      {/* Top Banner Navigation */}
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md print:hidden">
-        <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 shadow-xs">
-              <span className="text-xl text-white">💎</span>
-            </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight text-slate-900">Gemstone Lab Panel</h1>
-              <p className="text-xs text-slate-500">Internal Inventory System</p>
+      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md print:hidden shadow-xs">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+        
+            <div className="space-y-0.5">
+              <h1 className="text-base font-extrabold tracking-tight text-slate-900 uppercase">
+                Milestone Gems Lab
+              </h1>
+              <div className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <p className="text-[11px] font-bold text-slate-500 tracking-wide uppercase">
+                  Inventory 
+                </p>
+              </div>
             </div>
           </div>
+
+  
+
         </div>
       </header>
+
 
       {/* Main Workspace Dashboard Grid layout container */}
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 print:p-0">
@@ -78,21 +86,47 @@ const filteredGems = gems.filter(gem => {
           {/* Right Column Grid logs data tracking workspace */}
           <div className="lg:col-span-8 space-y-5 print:w-full print:block">
             
-            {/* Nav Tabs Selector Button Deck */}
-            <div className="flex border-b border-slate-200 gap-6 print:hidden">
+                 {/* Premium, High-Contrast Tab Selector Button Deck */}
+            <div className="flex bg-slate-100/80 p-1.5 rounded-xl border border-slate-200/60 gap-2 print:hidden items-center shadow-2xs">
+              
+              {/* Tab 1: Live Stock Inventory */}
               <button 
                 onClick={() => setActiveTab('inventory')}
-                className={`pb-3 text-sm font-semibold flex items-center gap-2 transition border-b-2 outline-hidden ${activeTab === 'inventory' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition duration-200 outline-hidden tracking-wide ${
+                  activeTab === 'inventory' 
+                    ? 'bg-white text-indigo-700 shadow-sm border border-slate-200/40' 
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-white/50'
+                }`}
               >
-                <Layers size={16}/> Live Stock Inventory ({gems.length})
+                <Layers size={16} strokeWidth={2.5} className={activeTab === 'inventory' ? 'text-indigo-600' : 'text-slate-400'} />
+                <span>Live Stock Inventory</span>
+                <span className={`inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-black font-mono leading-none tracking-wide ${
+                  activeTab === 'inventory' ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-200 text-slate-600'
+                }`}>
+                  {gems.length}
+                </span>
               </button>
+
+              {/* Tab 2: Sold Invoices History */}
               <button 
                 onClick={() => setActiveTab('sales')}
-                className={`pb-3 text-sm font-semibold flex items-center gap-2 transition border-b-2 outline-hidden ${activeTab === 'sales' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition duration-200 outline-hidden tracking-wide ${
+                  activeTab === 'sales' 
+                    ? 'bg-white text-indigo-700 shadow-sm border border-slate-200/40' 
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-white/50'
+                }`}
               >
-                <History size={16}/> Sold Invoices History ({invoices.length})
+                <History size={16} strokeWidth={2.5} className={activeTab === 'sales' ? 'text-indigo-600' : 'text-slate-400'} />
+                <span>Sold Invoices History</span>
+                <span className={`inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-black font-mono leading-none tracking-wide ${
+                  activeTab === 'sales' ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-200 text-slate-600'
+                }`}>
+                  {invoices.length}
+                </span>
               </button>
+              
             </div>
+
 
             {/* Dynamic View Condition Switcher Render Deck */}
             {activeTab === 'inventory' ? (
@@ -110,7 +144,11 @@ const filteredGems = gems.filter(gem => {
               </div>
             ) : (
               // ✅ Passed the click handler to display the view modal
-              <InvoiceList invoices={invoices} onViewClick={(invoice) => setViewingInvoice(invoice)} />
+             <InvoiceList 
+    invoices={invoices} 
+    onViewClick={(invoice) => setViewingInvoice(invoice)} 
+    onActionSuccess={loadData} 
+  />
             )}
 
           </div>

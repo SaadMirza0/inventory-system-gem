@@ -83,3 +83,10 @@ export async function getInvoices() {
   return await sql`SELECT * FROM invoices ORDER BY id DESC`;
 }
 
+
+// 7. Delete an Invoice Log entry permanently from the DB
+export async function deleteInvoice(id) {
+  await sql`DELETE FROM invoices WHERE id = ${id}`;
+  revalidatePath('/');
+}
+

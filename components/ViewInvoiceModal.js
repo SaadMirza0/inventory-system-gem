@@ -156,9 +156,11 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
                 </thead>
                 <tbody className="text-xs divide-y divide-slate-100 print:divide-y-0 print:text-black font-mono">
                   <tr className="print:border-b print:border-dashed print:border-black">
-                    <td className="p-3 print:py-2 print:px-0 font-bold text-slate-900 print:text-black print:text-left">
-                      <span className="block font-bold print:font-bold text-sm print:text-[13px] mb-0.5">{invoice.gem_name}</span>
-                      <span className="block text-[10px] text-slate-500 font-normal mt-0.5 print:text-[12px] print:text-black print:block">
+                    <td className="p-3 print:py-2 print:px-0 font-black text-slate-900 print:text-black print:text-left print:font-black">
+                      <span className="block font-black print:font-black text-sm print:text-[13px] mb-0.5 text-slate-900 print:text-black">
+                        {invoice.gem_name}
+                      </span>
+                      <span className="block text-[10px] text-slate-900 font-bold mt-0.5 print:text-[12px] print:text-black print:font-black print:block font-mono">
                         Specs: {invoice.weight}/{invoice.price_unit || 'Piece'} ({invoice.dimensions})
                       </span>
                     </td>

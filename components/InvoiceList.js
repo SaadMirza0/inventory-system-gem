@@ -1,21 +1,33 @@
 'use client';
 import { useState } from 'react';
-import { Calendar, User, Tag, Layers, Maximize, Search, Eye } from 'lucide-react';
+import { Calendar, User, Tag, Layers, Maximize, Search, Eye, Trash2 } from 'lucide-react'; // 👈 Added Trash2 icon
+import { deleteInvoice } from '@/app/actions/gemActions'; // 👈 Imported our new delete action
 
-export default function InvoiceList({ invoices, onViewClick }) {
+export default function InvoiceList({ invoices, onViewClick, onActionSuccess }) {
   const [invoiceSearch, setInvoiceSearch] = useState('');
 
-  // Filters invoices dynamically on the client side
   const filteredInvoices = invoices.filter((inv) => {
     const matchesName = inv.customer_name.toLowerCase().includes(invoiceSearch.toLowerCase());
     const matchesId = inv.id.toString().includes(invoiceSearch);
     return matchesName || matchesId;
   });
 
+  // ✅ HANDLER TO CONFIRM AND REMOVE RECORD FROM DB
+  const handleDeleteInvoice = async (id) => {
+    if (confirm('Are you sure you want to permanently delete this invoice record from history?')) {
+      try {
+        await deleteInvoice(id);
+        if (onActionSuccess) onActionSuccess(); // Triggers real-time re-fetch state update
+      } catch (err) {
+        alert('Error removing record: ' + err.message);
+      }
+    }
+  };
+
   return (
     <div className="space-y-4">
-      {/* Dynamic Search Bar for Invoices */}
-      <div className="relative flex items-center rounded-lg border border-slate-200 bg-white px-3 shadow-xs focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition">
+      {/* Search Input Bar */}
+      <div className="relative flex items-center rounded-lg border border-slate-200 bg-white px-3 shadow-2xs focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition">
         <Search size={16} className="text-slate-400 pointer-events-none" />
         <input 
           type="text" 
@@ -26,8 +38,8 @@ export default function InvoiceList({ invoices, onViewClick }) {
         />
       </div>
 
-      {/* Main History Table Container */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+      {/* History Table Container */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xs">
         <div className="p-5 border-b border-slate-100 bg-slate-50/50">
           <h3 className="text-base font-bold text-slate-900">Completed Sales History</h3>
           <p className="text-xs text-slate-500 mt-0.5">Logs of all gemstone transactions recorded in the database.</p>
@@ -54,6 +66,7 @@ export default function InvoiceList({ invoices, onViewClick }) {
               ) : (
                 filteredInvoices.map((inv) => (
                   <tr key={inv.id} className="hover:bg-slate-50/40 transition duration-75">
+                    
                     {/* Invoice ID & Date */}
                     <td className="px-5 py-3.5">
                       <span className="font-semibold text-slate-900 block">#{inv.id}</span>
@@ -62,7 +75,7 @@ export default function InvoiceList({ invoices, onViewClick }) {
                       </span>
                     </td>
                     
-                    {/* Product Details */}
+                    {/* Gemstone Product Details */}
                     <td className="px-5 py-3.5">
                       <span className="font-medium text-indigo-950 block">{inv.gem_name}</span>
                       <div className="flex gap-2 text-xs text-slate-500 mt-1 font-mono">
@@ -84,20 +97,31 @@ export default function InvoiceList({ invoices, onViewClick }) {
                       <span className="text-xs text-slate-400 font-mono">{inv.seller_number}</span>
                     </td>
                     
-                    {/* View Button & Price Display */}
+                    {/* Actions Controller Column Area */}
                     <td className="px-5 py-3.5 text-right">
-                      <div className="flex flex-col items-end gap-1.5">
+                      <div className="flex flex-col items-end gap-2">
                         <span className="font-bold text-emerald-700 font-mono text-sm">
                           Rs. {Number(inv.sold_price).toLocaleString()}
                         </span>
-                        <button 
-                          onClick={() => onViewClick(inv)} 
-                          className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600 shadow-2xs hover:bg-slate-50 transition"
-                        >
-                          <Eye size={12}/> View
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => onViewClick(inv)} 
+                            className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600 shadow-3xs hover:bg-slate-50 transition"
+                          >
+                            <Eye size={12}/> View
+                          </button>
+                          {/* ✅ NEW HIGH-CONTRAST DELETE BUTTON AS REQUESTED */}
+                          <button 
+                            onClick={() => handleDeleteInvoice(inv.id)} 
+                            className="inline-flex items-center gap-1 rounded-md border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 shadow-3xs hover:bg-rose-50 hover:text-rose-700 transition"
+                            title="Delete Invoice Entry"
+                          >
+                            <Trash2 size={12}/> Delete
+                          </button>
+                        </div>
                       </div>
                     </td>
+
                   </tr>
                 ))
               )}
@@ -108,3 +132,4 @@ export default function InvoiceList({ invoices, onViewClick }) {
     </div>
   );
 }
+
