@@ -8,8 +8,7 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 backdrop-blur-xs z-50 animate-fade-in print:bg-white print:p-0 print:static print:block">
-      
-      {/* 🛠️ Specialized Continuous Thermal Roll Spacing Overrides */}
+    
       <style jsx global>{`
         @media print {
           /* 1. Prevent standard browser layout pagination breaks */
@@ -82,10 +81,8 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
         }
       `}</style>
 
-      {/* Main Core Invoice Box container */}
+
       <div className="invoice-card-canvas bg-white rounded-xl shadow-2xl max-w-xl w-full flex flex-col max-h-[90vh] overflow-hidden border border-slate-200 print:shadow-none print:max-w-none print:w-[80mm] print:mx-auto print:bg-white print:text-black print:overflow-visible print:border-none">
-        
-        {/* Interactive Top Actions Controller Bar — Hidden when executing window printing */}
         <div className="flex justify-between items-center px-6 py-4 border-b print:hidden bg-slate-50">
           <h3 className="text-sm font-bold text-slate-800">Review Invoice #{invoice.id}</h3>
           <div className="flex items-center gap-3">
@@ -99,10 +96,10 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
           </div>
         </div>
 
-        {/* Core Invoice Receipt Sheet Document Area */}
+
         <div className="p-8 space-y-6 overflow-y-auto flex-1 text-slate-800 print:p-0 print:space-y-4 print:text-[13px] print:font-mono print:overflow-visible print:text-black print:w-full">
           
-          {/* Section 1: Center-Aligned Branded Header Hub */}
+
           <div className="thermal-header-block border-b border-slate-100 pb-2 text-center flex flex-col items-center justify-center print:border-none print:pb-0 print:mb-1 print:w-full">
             <div className="flex items-center justify-center gap-2 mb-1 print:mb-0">
               <span className="text-2xl print:hidden">💎</span>
@@ -113,15 +110,12 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
             <p className="text-xs text-slate-400 font-mono print:text-[13px] print:text-black font-bold">
               Ph: {invoice.seller_number || "0308 9110070"}
             </p>
-            
-            {/* Dashed Separator break line */}
+
             <div className="w-full text-center mt-3 pt-2 border-t border-slate-100 border-dashed print:border-black print:mt-2 print:pt-2 font-mono text-xs print:text-[13px] print:space-y-0.5">
               <p className="print:text-black">Date: {new Date(invoice.created_at).toLocaleString()}</p>
               <p className="print:text-black">Payment Mode: CASH</p>
             </div>
           </div>
-
-          {/* Section 2: Desktop Screen View Only Address Blocks */}
           <div className="grid grid-cols-2 gap-6 bg-slate-50 rounded-xl p-4 border border-slate-100 print:hidden">
             <div>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wide block mb-1">Issued By:</span>
@@ -135,14 +129,12 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
             </div>
           </div>
 
-          {/* Section 3: Clean Metadata Specifications Grid (Thermal Print View Only) */}
           <div className="hidden print:block text-[13px] border-t border-b border-dashed border-black py-3 my-2 space-y-1.5 w-full font-mono text-left">
             <div className="meta-info-row"><b>INVOICE ID :</b> #{invoice.id}</div>
             <div className="meta-info-row"><b>CUSTOMER   :</b> {invoice.customer_name}</div>
             <div className="meta-info-row"><b>CONTACT    :</b> {invoice.customer_number}</div>
           </div>
 
-          {/* Section 4: High-Contrast Asset Item Table */}
           <div className="space-y-2 print:space-y-0 print:w-full print:text-left print:mb-2">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wide block print:hidden">Transaction Item Details</span>
             <div className="border border-slate-200 rounded-lg overflow-hidden print:border-none print:rounded-none print:w-full">
@@ -176,7 +168,7 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
             </div>
           </div>
 
-          {/* Section 5: Formatted Billing Calculations Sheet */}
+
           <div className="flex flex-col items-end border-t border-slate-200 pt-4 print:border-t print:border-black print:pt-2 print:mt-2">
             <div className="w-64 space-y-2 print:w-full">
               <div className="flex justify-between text-sm print:text-[13px]">
@@ -194,13 +186,13 @@ export default function ViewInvoiceModal({ invoice, onClose }) {
             </div>
           </div>
 
-          {/* Section 6: Spaced Center-Aligned Receipt Footer Notice */}
+
           <div className="thermal-footer-block text-center text-xs space-y-1 pt-4 border-t border-slate-200 print:border-t print:border-black print:pt-3 print:mt-3">
             <p className="font-bold text-slate-700 print:text-black text-sm">THANK YOU !!</p>
             <p className="text-slate-400 print:text-black text-[10px] print:text-[11px]">
               Please make sure to check your Product before Purchasing otherwise we are not responsible for any damage.
             </p>
-            <p className="text-slate-300 print:text-black text-[9px] print:text-[10px] print:font-bold">Software By Saad Mirza</p>
+            <p className="text-slate-300 print:text-black text-[7px] print:text-[10px] print:font-bold">Software By Saad Mirza (+923010544620)</p>
        
           </div>
         </div>

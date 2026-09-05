@@ -19,7 +19,7 @@ export default function SellInvoiceModal({ gem, onClose, onSellSuccess }) {
    const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // 1. Fire database action entry
+
       const dbResponse = await createInvoiceAndSell({
         gemstone_id: gem.id,
         gem_name: gem.name,
@@ -36,7 +36,7 @@ export default function SellInvoiceModal({ gem, onClose, onSellSuccess }) {
         ? form.weight 
         : `${form.weight} ${gem.price_unit}`;
 
-      // 2. Clear WhatsApp message template strings — Removed weird broken diamond symbols
+   
       const textTemplate = `✨ *GEMS LAB INVOICE* ✨\n` +
         `----------------------------------------\n` +
         `🧾 *Invoice ID:* # ${invoiceId}\n` +
@@ -75,11 +75,11 @@ export default function SellInvoiceModal({ gem, onClose, onSellSuccess }) {
             <label className="text-xs font-semibold block text-slate-600 mb-1">Customer Name</label>
             <input required type="text" value={form.customer_name} onChange={(e) => setForm({...form, customer_name: e.target.value})} className="border p-2 w-full rounded-lg border-slate-200 outline-hidden" />
           </div>
-               {/* Automatically Sanitized Customer Phone Input Box */}
+     
           <div>
             <label className="text-xs font-semibold block text-slate-600 mb-1">Customer Number</label>
             <div className="relative flex items-center">
-              {/* Fixed country code prefix visible to user */}
+   
               <span className="absolute left-3 text-sm font-semibold text-slate-400 pointer-events-none select-none">
                 +92
               </span>
