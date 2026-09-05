@@ -8,7 +8,7 @@ import InvoiceList from '@/components/InvoiceList';
 import ViewInvoiceModal from '@/components/ViewInvoiceModal'; // ✅ Imported view modal component
 import dynamic from 'next/dynamic';
 import { Layers, History } from 'lucide-react';
-
+import { LogOut, ShieldAlert } from 'lucide-react';
 const SellInvoiceModal = dynamic(() => import('@/components/SellInvoiceModal'), {
   ssr: false,
 });
@@ -48,30 +48,53 @@ const filteredGems = gems.filter(gem => {
   return matchesSearch && matchesQty && matchesPrice;
 });
 
+  const handleLogout = () => {
 
+    const ajax = new XMLHttpRequest();
+    ajax.open("GET", window.location.href, true, "logout_user", "wrong_password_trigger");
+    ajax.send();
+    
+    ajax.onreadystatechange = () => {
+      if (ajax.readyState === 4) {
+
+        window.location.reload();
+      }
+    };
+  };
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md print:hidden shadow-xs">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
+   <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md print:hidden shadow-xs">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         
-            <div className="space-y-0.5">
-              <h1 className="text-base font-extrabold tracking-tight text-slate-900 uppercase">
-                Milestone Gems Lab
-              </h1>
-              <div className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <p className="text-[11px] font-bold text-slate-500 tracking-wide uppercase">
-                  Inventory 
-                </p>
-              </div>
+        {/* Left Side: Brand Panel */}
+        <div className="flex items-center gap-3">
+          <div className="space-y-0.5">
+            <h1 className="text-base font-extrabold tracking-tight text-slate-900 uppercase">
+              Milestone Gems Lab
+            </h1>
+            <div className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <p className="text-[11px] font-bold text-slate-500 tracking-wide uppercase">
+                Inventory 
+              </p>
             </div>
           </div>
-
-  
-
         </div>
-      </header>
+
+        {/* Right Side: High-Contrast Premium Logout Button */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleLogout}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-xs font-bold text-rose-600 shadow-2xs hover:bg-rose-600 hover:text-white transition duration-150 outline-hidden cursor-pointer"
+            title="Securely Lock Terminal"
+          >
+            <LogOut size={14} strokeWidth={2.5} />
+            <span>Lock Terminal</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
 
 
       {/* Main Workspace Dashboard Grid layout container */}
